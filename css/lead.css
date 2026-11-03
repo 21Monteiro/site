@@ -1,0 +1,328 @@
+/* ============================================================================
+   21MONTEIRO — FORMULÁRIO DE PRÉ-QUALIFICAÇÃO
+   Modal que aparece antes de mandar o visitante para o WhatsApp.
+   ========================================================================== */
+
+.lead {
+  position: fixed;
+  inset: 0;
+  z-index: 300;               /* acima do lightbox (200) e do header (100) */
+  display: grid;
+  place-items: center;
+  padding: clamp(.75rem, 3vw, 2rem);
+}
+
+.lead[hidden] { display: none; }
+
+.lead-fundo {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 9, 26, .88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.lead.aberto .lead-fundo { opacity: 1; }
+
+/* ---- PAINEL --------------------------------------------------------------- */
+.lead-painel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 520px);
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  background: linear-gradient(165deg, var(--navy-700), var(--navy-900));
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-lg);
+  box-shadow: 0 40px 100px -30px rgba(0, 0, 0, .9);
+  opacity: 0;
+  transform: translateY(18px) scale(.985);
+  transition: opacity 280ms cubic-bezier(.22, 1, .36, 1),
+              transform 280ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.lead.aberto .lead-painel { opacity: 1; transform: none; }
+
+/* Fio de luz no topo, igual ao cartão do hero */
+.lead-painel::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 15%; right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 148, 43, .8), transparent);
+}
+
+.lead-x {
+  position: absolute;
+  top: .875rem; right: .875rem;
+  display: grid;
+  place-items: center;
+  width: 38px; height: 38px;
+  border-radius: var(--raio-full);
+  color: var(--texto-fraco);
+  transition: color var(--transicao), background var(--transicao);
+}
+
+.lead-x:hover { color: var(--texto); background: var(--superficie-2); }
+.lead-x svg { width: 18px; height: 18px; }
+
+/* ---- CABEÇALHO ------------------------------------------------------------ */
+.lead-topo { margin-bottom: 1.75rem; padding-right: 2.5rem; }
+
+.lead-topo h2 {
+  font-size: var(--t-xl);
+  margin: .375rem 0 .625rem;
+}
+
+.lead-sub {
+  color: var(--texto-suave);
+  font-size: var(--t-sm);
+  line-height: 1.6;
+}
+
+/* ---- ETAPAS --------------------------------------------------------------- *
+   Uma pergunta por vez. O <fieldset> escondido some de verdade (hidden), não
+   só da vista: assim ele sai da ordem de tabulação e do leitor de tela.
+   -------------------------------------------------------------------------- */
+.lead-progresso {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-top: 1.25rem;
+}
+
+.lead-barra {
+  flex: 1;
+  height: 4px;
+  border-radius: var(--raio-full);
+  background: rgba(255, 255, 255, .09);
+  overflow: hidden;
+}
+
+.lead-barra-cheia {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--gradiente-marca);
+  transition: width 320ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.lead-contador {
+  font-size: var(--t-xs);
+  color: var(--texto-fraco);
+  font-variant-numeric: tabular-nums;
+}
+
+.lead-form { display: flex; flex-direction: column; gap: 1.125rem; }
+
+/* Altura mínima para o painel não pular a cada troca de pergunta. */
+.lead-corpo { min-height: 190px; }
+
+.lead-passo {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.lead-passo[hidden] { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .lead-passo { animation: lead-entra 260ms cubic-bezier(.22, 1, .36, 1); }
+}
+
+@keyframes lead-entra {
+  from { opacity: 0; transform: translateX(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.lead-pergunta {
+  padding: 0;
+  font-size: var(--t-md);
+  font-weight: 600;
+  color: var(--texto);
+}
+
+.lead-pergunta span {
+  font-weight: 400;
+  color: var(--texto-fraco);
+}
+
+/* ---- CAMPOS DE TEXTO ------------------------------------------------------ */
+.lead-passo input[type="text"],
+.lead-passo input[type="tel"],
+.lead-passo textarea {
+  width: 100%;
+  padding: .8125rem 1rem;
+  background: rgba(255, 255, 255, .045);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-sm);
+  color: var(--texto);
+  font-family: inherit;
+  transition: border-color var(--transicao), background var(--transicao),
+              box-shadow var(--transicao);
+  /* Impede o zoom automático do Safari no iPhone ao focar um campo */
+  font-size: max(16px, var(--t-sm));
+}
+
+.lead-passo textarea { resize: vertical; min-height: 84px; line-height: 1.5; }
+
+.lead-passo input::placeholder,
+.lead-passo textarea::placeholder { color: var(--texto-fraco); }
+
+.lead-passo input:focus,
+.lead-passo textarea:focus {
+  outline: none;
+  border-color: rgba(255, 126, 0, .6);
+  background: rgba(255, 255, 255, .07);
+  box-shadow: 0 0 0 3px rgba(255, 126, 0, .13);
+}
+
+.lead-passo [aria-invalid="true"] {
+  border-color: rgba(255, 90, 90, .65);
+  background: rgba(255, 90, 90, .06);
+}
+
+/* ---- RESPOSTAS DE ESCOLHA ------------------------------------------------- *
+   O rádio continua lá, só fica invisível: é ele que dá seta do teclado e
+   leitura correta de "opção 2 de 5". O visual é todo do <label>.
+   -------------------------------------------------------------------------- */
+.lead-opcoes { display: flex; flex-direction: column; gap: .5rem; }
+
+.lead-opcao {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .8125rem 1rem;
+  background: rgba(255, 255, 255, .045);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-sm);
+  color: var(--texto-suave);
+  font-size: max(16px, var(--t-sm));
+  cursor: pointer;
+  transition: border-color var(--transicao), background var(--transicao),
+              color var(--transicao);
+}
+
+.lead-opcao:hover {
+  border-color: var(--borda-forte);
+  background: rgba(255, 255, 255, .07);
+  color: var(--texto);
+}
+
+/* A bolinha é desenhada antes do texto, e o rádio real fica fora da tela. */
+.lead-opcao input {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.lead-opcao::before {
+  content: "";
+  flex: none;
+  width: 18px; height: 18px;
+  border: 2px solid var(--borda-forte);
+  border-radius: 50%;
+  transition: border-color var(--transicao), box-shadow var(--transicao);
+}
+
+.lead-opcao:has(input:checked) {
+  border-color: rgba(255, 126, 0, .55);
+  background: rgba(255, 126, 0, .09);
+  color: var(--texto);
+}
+
+.lead-opcao:has(input:checked)::before {
+  border-color: var(--laranja);
+  box-shadow: inset 0 0 0 4px var(--laranja);
+}
+
+/* O foco mora no rádio escondido, então a moldura vai no rótulo. */
+.lead-opcao:has(input:focus-visible) {
+  outline: 2px solid var(--laranja-cl);
+  outline-offset: 2px;
+}
+
+.lead-erro {
+  font-size: var(--t-xs);
+  color: #FF8A8A;
+  min-height: 1em;
+}
+
+.lead-erro:empty { min-height: 0; }
+
+/* ---- NAVEGAÇÃO ------------------------------------------------------------ */
+.lead-navegacao {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-top: .375rem;
+}
+
+.lead-navegacao [hidden] { display: none; }
+
+.lead-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  padding: .75rem .875rem;
+  border-radius: var(--raio-sm);
+  font-size: var(--t-sm);
+  color: var(--texto-fraco);
+  transition: color var(--transicao), background var(--transicao);
+}
+
+.lead-voltar:hover { color: var(--texto); background: var(--superficie-2); }
+.lead-voltar svg { width: 16px; height: 16px; }
+
+.lead-continuar { flex: 1; padding-block: 1rem; }
+.lead-continuar svg { width: 18px; height: 18px; }
+
+/* ---- ENVIO ---------------------------------------------------------------- */
+.lead-enviar { flex: 1; padding-block: 1rem; }
+.lead-enviar svg { width: 20px; height: 20px; }
+.lead-enviar:disabled { opacity: .75; cursor: wait; transform: none; }
+
+.lead-aviso {
+  font-size: var(--t-xs);
+  color: var(--texto-fraco);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.lead-aviso a {
+  color: var(--texto-suave);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.lead-aviso a:hover { color: var(--laranja-cl); }
+
+/* ---- MOBILE --------------------------------------------------------------- *
+   Vira uma folha que sobe de baixo, como um app.
+   -------------------------------------------------------------------------- */
+@media (max-width: 560px) {
+  .lead { padding: 0; place-items: end center; }
+
+  .lead-painel {
+    width: 100%;
+    max-height: 92svh;
+    border-radius: var(--raio-lg) var(--raio-lg) 0 0;
+    border-bottom: 0;
+    transform: translateY(100%);
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .lead.aberto .lead-painel { transform: none; }
+  .lead-form { gap: 1rem; }
+}

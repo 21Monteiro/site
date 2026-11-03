@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://21monteiro.com.br/sitemap.xml
