@@ -58,7 +58,7 @@ const DADOS = {
    * -------------------------------------------------------------------- */
   rastreamento: {
     gtm: "",
-    pixel: "",
+    pixel: "1202966760922593",
     politicaCookies: "/politica-de-cookies/"
   },
 
